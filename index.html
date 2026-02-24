@@ -376,7 +376,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(143,163,188,0.1), transparent);
+            background: linear-gradient(135deg, var(--gold-dim), transparent);
             opacity: 0;
             transition: opacity 0.25s;
         }
@@ -386,14 +386,14 @@
         }
 
         .month-day-card:hover {
-            border-color: var(--silver);
+            border-color: var(--gold);
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
         .month-day-card.today-month {
-            border-color: var(--silver);
-            box-shadow: 0 0 0 1px var(--silver), 0 8px 25px rgba(143,163,188,0.15);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 1px var(--gold), 0 8px 25px rgba(201,168,76,0.2);
         }
 
         .month-day-card.today-month::before {
@@ -405,7 +405,7 @@
             top: 5px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--silver);
+            background: var(--gold);
             color: var(--deep);
             font-size: 0.42rem;
             font-weight: 700;
@@ -426,7 +426,7 @@
         }
 
         .month-day-card.today-month .month-day-num {
-            color: var(--silver);
+            color: var(--gold-light);
         }
 
         .month-day-range {
@@ -439,7 +439,7 @@
         }
 
         .month-day-card.today-month .month-day-range {
-            color: var(--silver);
+            color: var(--gold);
         }
 
         .month-day-count {
@@ -1154,6 +1154,106 @@
             font-family: 'Noto Serif Hebrew', serif;
         }
 
+
+        /* ===================== */
+        /* MOBILE RESPONSIVE     */
+        /* ===================== */
+        @media (max-width: 480px) {
+
+            /* Header */
+            header { padding: 0 1rem; }
+            .header-inner { height: 60px; gap: 8px; }
+            .logo-icon { width: 36px; height: 36px; font-size: 1.2rem; border-radius: 9px; }
+            .logo-text { font-size: 0.85rem; }
+            .logo-subtitle { font-size: 0.55rem; }
+            .btn-random { padding: 8px 12px; font-size: 0.75rem; }
+            .btn-whatsapp { width: 36px; height: 36px; }
+
+            /* Main padding */
+            main { padding: 1.5rem 1rem 4rem; }
+
+            /* Tabs */
+            .reading-tabs { max-width: 100%; margin-bottom: 1.2rem; }
+            .reading-tab { font-size: 0.78rem; padding: 9px 12px; }
+
+            /* Rabbis row — stack vertically on small screens */
+            .rabbis-row { gap: 1.5rem; flex-direction: column; align-items: center; }
+            .rabbi-frame { width: 140px; height: 140px; }
+            .rabbi-glow { inset: -20px; }
+            .rabbi-name { font-size: 1rem !important; }
+            .rabbi-sub { font-size: 0.72rem; }
+            .rabbi-zl { font-size: 0.65rem; }
+            .rabbi-ornament-line { width: 40px; }
+            .rabbi-tribute { margin-bottom: 0; }
+
+            /* Quote banner */
+            .quote-banner { padding: 1.5rem 1.2rem; margin-bottom: 2rem; }
+            .quote-text { font-size: 1rem !important; line-height: 1.8; }
+            .quote-attribution { font-size: 0.78rem; }
+            .quote-marks { font-size: 3rem; top: -14px; }
+
+            /* Days grid */
+            .days-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+            .day-card { padding: 10px 5px; border-radius: 10px; }
+            .day-name { font-size: 0.82rem; }
+            .day-range { font-size: 0.58rem; }
+            .day-count { font-size: 0.48rem; }
+            .today-badge { font-size: 0.4rem; padding: 1px 4px; }
+
+            /* Monthly grid */
+            .monthly-grid { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+            .month-day-card { padding: 8px 4px; border-radius: 9px; }
+            .month-day-num { font-size: 0.8rem; }
+            .month-day-range { font-size: 0.52rem; }
+            .month-day-count { font-size: 0.44rem; }
+            .today-month-badge { font-size: 0.38rem; padding: 1px 4px; }
+
+            /* Reading bar */
+            .day-reading-bar, .month-reading-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 12px 14px;
+            }
+            .day-reading-title, .month-reading-title { font-size: 0.95rem; }
+            .day-reading-subtitle { font-size: 0.7rem; }
+            .day-chapter-btn, .month-chapter-btn {
+                font-size: 0.72rem;
+                padding: 5px 8px;
+            }
+
+            /* Selector */
+            .selector-label { font-size: 0.62rem; }
+            #perekSelect { font-size: 0.95rem; padding: 12px 16px 12px 36px; }
+            .quick-btn { width: 38px; height: 38px; font-size: 0.72rem; }
+
+            /* Chapter card */
+            .card-inner { padding: 1.8rem 1.2rem; }
+            #perekTitle { font-size: 2rem !important; }
+            .chapter-subtitle { font-size: 0.7rem; margin-bottom: 1.8rem; }
+            #perekBody { font-size: 1.25rem; line-height: 2.3; }
+
+            /* Nav */
+            .chapter-nav { margin-top: 2rem; padding-top: 1.5rem; }
+            .nav-btn { padding: 8px 12px; font-size: 0.85rem; }
+            .chapter-counter { font-size: 0.7rem; }
+
+            /* Mark read button */
+            .btn-mark-read { font-size: 0.88rem; padding: 10px 20px; }
+
+            /* Ornament divider */
+            .ornament-divider { margin: 1.5rem 0; }
+            .ornament-divider span { font-size: 1.1rem; }
+        }
+
+        /* Medium phones (481–600px) */
+        @media (min-width: 481px) and (max-width: 600px) {
+            main { padding: 2rem 1.2rem 4rem; }
+            .rabbis-row { gap: 2rem; }
+            .rabbi-frame { width: 160px; height: 160px; }
+            .monthly-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+            #perekBody { font-size: 1.35rem; }
+            .card-inner { padding: 2rem 1.5rem; }
+        }
     </style>
 </head>
 <body>
