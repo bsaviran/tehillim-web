@@ -25,9 +25,14 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html, body {
+        html {
             overflow-x: hidden;
-            max-width: 100%;
+        }
+
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+            position: relative;
         }
 
         body {
@@ -212,8 +217,10 @@
             position: relative;
             z-index: 1;
             max-width: 900px;
+            width: 100%;
             margin: 0 auto;
             padding: 3rem 1.5rem 5rem;
+            overflow: hidden;
         }
 
         /* === DAILY SECTION === */
@@ -956,6 +963,8 @@
             gap: 3rem;
             flex-wrap: wrap;
             margin-bottom: 1.5rem;
+            overflow: hidden;
+            width: 100%;
         }
 
         .rabbi-tribute {
@@ -1063,6 +1072,10 @@
         .rabbi-frame-outer {
             display: inline-block;
             position: relative;
+            overflow: hidden;
+            border-radius: 50%;
+            padding: 30px;
+            margin: -30px;
         }
 
         .rabbi-glow {
