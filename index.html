@@ -1463,7 +1463,45 @@
 
         // === READ TRACKING via localStorage ===
         const todayKey = 'tehillim_read_' + new Date().toISOString().slice(0, 10);
-        const monthKey = 'tehillim_month_read_' + new Date().toISOString().slice(0, 7); // per month
+        // Hebrew month key — resets with the Hebrew month, not Gregorian
+        function getHebrewMonthKey() {
+            try {
+                const now = new Date();
+                const gYear = now.getFullYear(), gMonth = now.getMonth()+1, gDay = now.getDate();
+                function isLeap(y){return((7*y)+1)%19<7;}
+                function elapsed(y){
+                    const me=235*Math.floor((y-1)/19)+12*((y-1)%19)+Math.floor((7*((y-1)%19)+1)/19);
+                    const pe=204+793*(me%1080);
+                    const he=5+12*me+793*Math.floor(me/1080)+Math.floor(pe/1080);
+                    const d=1+29*me+Math.floor(he/24), p=1080*(he%24)+(pe%1080);
+                    let ad=d;
+                    if(p>=19440||(d%7===2&&p>=9924&&!isLeap(y))||(d%7===1&&p>=16789&&isLeap(y-1)))ad=d+1;
+                    if(ad%7===0||ad%7===3||ad%7===5)return ad+1;
+                    return ad;
+                }
+                function yearStart(y){return elapsed(y)+347997;}
+                function monthDays(y,m){
+                    if([2,4,6,10,13].includes(m))return 29;
+                    if(m===12&&!isLeap(y))return 29;
+                    if(m===8&&(elapsed(y+1)-elapsed(y))%10!==5)return 29;
+                    if(m===9&&(elapsed(y+1)-elapsed(y))%10===3)return 29;
+                    return 30;
+                }
+                const aa=Math.floor((14-gMonth)/12), yr=gYear+4800-aa, mo=gMonth+12*aa-3;
+                const jdn=gDay+Math.floor((153*mo+2)/5)+365*yr+Math.floor(yr/4)-Math.floor(yr/100)+Math.floor(yr/400)-32045;
+                let hYear=Math.floor((jdn-347997)*98496/35975351)+1;
+                if(yearStart(hYear+1)<=jdn)hYear++;
+                if(yearStart(hYear)>jdn)hYear--;
+                const dayOfYear=jdn-yearStart(hYear)+1;
+                let days=0, hMonth=1;
+                const months=isLeap(hYear)?13:12;
+                for(let i=1;i<=months;i++){const md=monthDays(hYear,i);if(days+md>=dayOfYear){hMonth=i;break;}days+=md;}
+                return 'tehillim_month_read_'+hYear+'_'+hMonth;
+            } catch(e) {
+                return 'tehillim_month_read_'+new Date().toISOString().slice(0,7);
+            }
+        }
+        const monthKey = getHebrewMonthKey();
 
         function getReadSet() {
             try { return new Set(JSON.parse(localStorage.getItem(todayKey) || '[]')); }
