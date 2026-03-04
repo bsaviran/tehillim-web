@@ -1472,8 +1472,15 @@
         let selectedDay = null;
         let selectedMonthDay = null;
 
-        // === READ TRACKING via localStorage ===
-        const todayKey = 'tehillim_read_' + new Date().toISOString().slice(0, 10);
+            function getWeekKey() {
+        const now = new Date();
+        const day = now.getDay();
+        const lastSunday = new Date(now);
+        lastSunday.setDate(now.getDate() - day);
+        return 'tehillim_read_week_' + lastSunday.toISOString().slice(0, 10);
+    }
+    const todayKey = getWeekKey();
+        
         // Hebrew month key — resets with the Hebrew month, not Gregorian
         function getHebrewMonthKey() {
             try {
