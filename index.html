@@ -800,6 +800,24 @@
             color: #f87171;
         }
 
+        .btn-clear-reads {
+            background: transparent;
+            border: 1px solid rgba(220,38,38,0.3);
+            border-radius: 20px;
+            color: rgba(220,38,38,0.6);
+            font-family: 'Heebo', sans-serif;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-clear-reads:hover {
+            background: rgba(220,38,38,0.1);
+            border-color: rgba(220,38,38,0.6);
+            color: #f87171;
+        }
+
         /* === CHAPTER CARD === */
         .chapter-card {
             background: linear-gradient(160deg, var(--navy-mid) 0%, rgba(10,22,40,0.95) 100%);
@@ -1375,7 +1393,10 @@
         <!-- === DAILY / WEEKLY SECTION === -->
         <div class="reading-section active" id="sectionDaily">
             <div class="daily-section">
-                <p class="daily-label">✦ קריאה שבועית · לפי ימות השבוע ✦</p>
+                <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:1.2rem;">
+                    <p class="daily-label" style="margin-bottom:0;">✦ קריאה שבועית · לפי ימות השבוע ✦</p>
+                    <button class="btn-clear-reads" onclick="clearWeeklyReads()">🗑 נקה סימונים</button>
+                </div>
                 <div class="days-grid" id="daysGrid"></div>
             </div>
 
@@ -1392,7 +1413,10 @@
         <!-- === MONTHLY SECTION === -->
         <div class="reading-section" id="sectionMonthly">
             <div class="monthly-section">
-                <p class="daily-label">✦ קריאה חודשית · לפי ימות החודש ✦</p>
+                <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:1.2rem;">
+                    <p class="daily-label" style="margin-bottom:0;">✦ קריאה חודשית · לפי ימות החודש ✦</p>
+                    <button class="btn-clear-reads" onclick="clearMonthlyReads()">🗑 נקה סימונים</button>
+                </div>
                 <div class="monthly-grid" id="monthlyGrid"></div>
             </div>
 
@@ -2083,6 +2107,30 @@
             }
             const next = currentChapter + dir;
             if (next >= 1 && next <= 150) fetchPerek(next, monthlyMode);
+        }
+
+        function clearWeeklyReads() {
+            if (!confirm('למחוק את כל הסימונים השבועיים?')) return;
+            localStorage.removeItem(todayKey);
+            updateMarkReadBtn(currentChapter);
+            // רענן כפתורים וקוביות
+            document.querySelectorAll('.day-chapter-btn').forEach(b => b.classList.remove('done'));
+            document.querySelectorAll('[id^="dayProgress_"]').forEach(el => {
+                el.textContent = '';
+                el.classList.remove('has-progress');
+            });
+        }
+
+        function clearMonthlyReads() {
+            if (!confirm('למחוק את כל הסימונים החודשיים?')) return;
+            localStorage.removeItem(monthKey);
+            updateMarkReadBtn(currentChapter);
+            // רענן כפתורים וקוביות
+            document.querySelectorAll('.month-chapter-btn').forEach(b => b.classList.remove('done'));
+            document.querySelectorAll('[id^="monthProgress_"]').forEach(el => {
+                el.textContent = '';
+                el.classList.remove('has-progress');
+            });
         }
 
         function getRandomPerek() {
