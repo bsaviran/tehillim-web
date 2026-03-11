@@ -1737,6 +1737,13 @@
             return Math.min(Math.max(hDay, 1), 30);
         }
 
+        // מפתח ייחודי לקריאה — מאפשר הבחנה בין חלקי פרק קיט
+        function makeReadKey(num, vStart, vEnd) {
+            if (vStart) return `${num}_vs${vStart}`;
+            if (vEnd)   return `${num}_ve${vEnd}`;
+            return `${num}`;
+        }
+
         // =====================
         // BUILD MONTHLY GRID
         // =====================
@@ -1901,12 +1908,6 @@
         let currentVerseStart = null;
         let currentVerseEnd = null;
 
-        // מפתח ייחודי לקריאה — מאפשר הבחנה בין חלקי פרק קיט
-        function makeReadKey(num, vStart, vEnd) {
-            if (vStart) return `${num}_vs${vStart}`;
-            if (vEnd)   return `${num}_ve${vEnd}`;
-            return `${num}`;
-        }
         let currentReadKey = null;
 
         async function fetchPerek(num, isMonthly, verseStart, verseEnd) {
