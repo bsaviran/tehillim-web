@@ -1981,10 +1981,12 @@
             const icon = document.getElementById('markReadIcon');
             const text = document.getElementById('markReadText');
             if (!btn) return;
-            const read = monthlyMode ? getMonthReadSet().has(currentReadKey) : isRead(num);
+            const monthSet = getMonthReadSet();
+            const read = monthlyMode ? monthSet.has(currentReadKey) : isRead(num);
+            console.log('updateMarkReadBtn:', {num, currentReadKey, monthlyMode, read, monthSetKeys: [...monthSet]});
             btn.className = 'btn-mark-read' + (read ? ' done' : '');
             icon.textContent = read ? '✓' : '☐';
-            text.textContent = read ? 'קראתי! (לחץ לביטול)' : 'קראתי';
+            text.textContent = read ? 'נקרא · לחץ לביטול' : 'קראתי';
         }
 
         function updateReadUI(num) {
