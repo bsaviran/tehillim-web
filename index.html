@@ -15,7 +15,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="תהילים">
+<meta name="apple-mobile-web-app-title" content="תהילים">  
     <meta name="theme-color" content="#0a1628">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@300;400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -462,7 +462,7 @@
 
         .month-day-count {
             font-size: 0.5rem;
-            color: rgba(143,163,188,0.5);
+            color: rgba(201,168,76,0.5);
             margin-top: 3px;
             position: relative;
             z-index: 1;
@@ -1362,7 +1362,7 @@
             <div class="quote-shimmer"></div>
             <div class="quote-marks">❝</div>
             <div class="quote-attribution">אמר אדמו"ר הצמח צדק</div>
-            <div class="quote-text">אילו ידעתם כוחם של פסוקי תהלים ופעולתם בשמי רום,<br>הייתם אומרים אותם בכל עת</div>
+            <div class="quote-text">אילו ידעם כוחם של פסוקי תהלים ופעולתם בשמי רום,<br>הייתם אומרים אותם בכל עת</div>
             <div class="quote-source">— היום יום · כ"ד שבט</div>
         </div>
 
@@ -1392,7 +1392,7 @@
         <!-- === MONTHLY SECTION === -->
         <div class="reading-section" id="sectionMonthly">
             <div class="monthly-section">
-                <p class="daily-label" style="color:var(--silver);">✦ קריאה חודשית · לפי ימות החודש ✦</p>
+                <p class="daily-label">✦ קריאה חודשית · לפי ימות החודש ✦</p>
                 <div class="monthly-grid" id="monthlyGrid"></div>
             </div>
 
@@ -1472,7 +1472,7 @@
         let selectedDay = null;
         let selectedMonthDay = null;
 
-            function getWeekKey() {
+        function getWeekKey() {
         const now = new Date();
         const day = now.getDay();
         const lastSunday = new Date(now);
@@ -1480,7 +1480,6 @@
         return 'tehillim_read_week_' + lastSunday.toISOString().slice(0, 10);
     }
     const todayKey = getWeekKey();
-        
         // Hebrew month key — resets with the Hebrew month, not Gregorian
         function getHebrewMonthKey() {
             try {
@@ -1595,8 +1594,8 @@
             { day: 22, range: [106, 107],label: 'קו – קז' },
             { day: 23, range: [108, 112],label: 'קח – קיב' },
             { day: 24, range: [113, 118],label: 'קיג – קיח' },
-            { day: 25, range: [119, 119],label: 'קיט א–קעו (עד "לכל תכלה")' },
-            { day: 26, range: [119, 119],label: 'קיט קעז–קעו (המשך עד סוף)' },
+            { day: 25, range: [119, 119], label: 'קיט, א–צו', verseEnd: 96 },
+            { day: 26, range: [119, 119], label: 'קיט, צז–סוף הפרק', verseStart: 97 },
             { day: 27, range: [120, 134],label: 'קכ – קלד' },
             { day: 28, range: [135, 139],label: 'קלה – קלט' },
             { day: 29, range: [140, 144],label: 'קמ – קמד' },
@@ -1752,7 +1751,12 @@
                 card.id = 'monthDayCard_' + i;
 
                 const count = entry.range[1] - entry.range[0] + 1;
-                const readCount = [...Array(count)].filter((_, j) => isMonthRead(entry.range[0] + j)).length;
+                const monthSet = getMonthReadSet();
+                const readCount = [...Array(count)].filter((_, j) => {
+                    const ch = entry.range[0] + j;
+                    const rKey = makeReadKey(ch, entry.verseStart||null, entry.verseEnd||null);
+                    return monthSet.has(rKey) || monthSet.has(ch);
+                }).length;
                 const progressText = readCount > 0 ? `✓ ${readCount}/${count}` : '';
                 const dayGematria = toGematria(entry.day);
 
@@ -1838,14 +1842,18 @@
             btns.innerHTML = '';
             for (let ch = entry.range[0]; ch <= entry.range[1]; ch++) {
                 const btn = document.createElement('button');
-                const read = isMonthRead(ch);
+                const rKey = makeReadKey(ch, entry.verseStart||null, entry.verseEnd||null);
+                const read = getMonthReadSet().has(rKey);
                 btn.className = 'month-chapter-btn' + (ch === currentChapter ? ' reading' : '') + (read ? ' done' : '');
                 btn.dataset.num = ch;
+                btn.dataset.readkey = rKey;
                 btn.textContent = toGematria(ch);
                 btn.title = `פרק ${toGematria(ch)}${read ? ' (נקרא)' : ''}`;
                 const chNum = ch;
+                const vStart = entry.verseStart || null;
+                const vEnd = entry.verseEnd || null;
                 btn.onclick = () => {
-                    fetchPerek(chNum, true);
+                    fetchPerek(chNum, true, vStart, vEnd);
                     document.querySelectorAll('.month-chapter-btn').forEach(b => b.classList.remove('reading'));
                     btn.classList.add('reading');
                 };
@@ -1853,7 +1861,10 @@
             }
 
             const total = entry.range[1] - entry.range[0] + 1;
-            const readCount = [...getMonthReadSet()].filter(n => n >= entry.range[0] && n <= entry.range[1]).length;
+            const monthSet = getMonthReadSet();
+            const allKeys = Array.from({length: total}, (_, j) =>
+                makeReadKey(entry.range[0] + j, entry.verseStart||null, entry.verseEnd||null));
+            const readCount = allKeys.filter(k => monthSet.has(k)).length;
             subtitle.textContent = readCount > 0
                 ? `${readCount} מתוך ${total} פרקים נקראו ✓`
                 : `${total} פרקים לקריאה`;
@@ -1887,8 +1898,18 @@
 
         // monthlyMode flag – which read set to use
         let monthlyMode = false;
+        let currentVerseStart = null;
+        let currentVerseEnd = null;
 
-        async function fetchPerek(num, isMonthly) {
+        // מפתח ייחודי לקריאה — מאפשר הבחנה בין חלקי פרק קיט
+        function makeReadKey(num, vStart, vEnd) {
+            if (vStart) return `${num}_vs${vStart}`;
+            if (vEnd)   return `${num}_ve${vEnd}`;
+            return `${num}`;
+        }
+        let currentReadKey = null;
+
+        async function fetchPerek(num, isMonthly, verseStart, verseEnd) {
             num = parseInt(num);
             if (!num) return;
             if (isMonthly !== undefined) monthlyMode = !!isMonthly;
@@ -1902,6 +1923,9 @@
             });
             perekSelect.value = num;
             currentChapter = num;
+            currentVerseStart = verseStart || null;
+            currentVerseEnd = verseEnd || null;
+            currentReadKey = makeReadKey(num, currentVerseStart, currentVerseEnd);
 
             document.querySelectorAll('.day-chapter-btn').forEach(b => {
                 b.classList.toggle('reading', parseInt(b.dataset.num) === num);
@@ -1914,13 +1938,21 @@
                 const response = await fetch(`https://www.sefaria.org/api/texts/Psalms.${num}?context=0&commentary=0`);
                 const data = await response.json();
 
-                const cleanText = data.he.map((v, i) => {
-                    const verseNum = toGematria(i + 1);
+                let verses = data.he;
+                if (verseStart) verses = verses.slice(verseStart - 1);
+                if (verseEnd)   verses = verses.slice(0, verseEnd);
+
+                const baseVerse = verseStart || 1;
+                const cleanText = verses.map((v, i) => {
+                    const verseNum = toGematria(baseVerse + i);
                     return `<span style="color:var(--gold);font-size:0.85em;margin-left:8px;opacity:0.7;">${verseNum}</span>${v}`;
                 }).join(' <span class="verse-sep">׃</span> ');
 
                 perekTitle.textContent = `פרק ${toGematria(num)}`;
-                chapterSubtitle.textContent = `מזמור ${num} מתוך 150 · ספר תהילים`;
+                const verseRangeText = (verseStart || verseEnd)
+                    ? ` · פסוקים ${toGematria(baseVerse)}–${toGematria(verseEnd || verses.length + baseVerse - 1)}`
+                    : '';
+                chapterSubtitle.textContent = `מזמור ${num} מתוך 150 · ספר תהילים${verseRangeText}`;
                 perekBody.innerHTML = cleanText;
 
                 chapterCounter.textContent = `${num} / 150`;
@@ -1948,7 +1980,7 @@
             const icon = document.getElementById('markReadIcon');
             const text = document.getElementById('markReadText');
             if (!btn) return;
-            const read = monthlyMode ? isMonthRead(num) : isRead(num);
+            const read = monthlyMode ? getMonthReadSet().has(currentReadKey) : isRead(num);
             btn.className = 'btn-mark-read' + (read ? ' done' : '');
             icon.textContent = read ? '✓' : '☐';
             text.textContent = read ? 'קראתי! (לחץ לביטול)' : 'קראתי';
@@ -1964,7 +1996,8 @@
             // Monthly buttons
             document.querySelectorAll('.month-chapter-btn').forEach(b => {
                 if (parseInt(b.dataset.num) === num) {
-                    b.classList.toggle('done', isMonthRead(num));
+                    const key = b.dataset.readkey || String(num);
+                    b.classList.toggle('done', getMonthReadSet().has(key));
                 }
             });
 
@@ -1990,7 +2023,12 @@
             monthlySchedule.forEach((entry, i) => {
                 if (num >= entry.range[0] && num <= entry.range[1]) {
                     const total = entry.range[1] - entry.range[0] + 1;
-                    const rc = [...getMonthReadSet()].filter(n => n >= entry.range[0] && n <= entry.range[1]).length;
+                    const monthSet = getMonthReadSet();
+                    const rc = [...Array(total)].filter((_, j) => {
+                        const ch = entry.range[0] + j;
+                        const rKey = makeReadKey(ch, entry.verseStart||null, entry.verseEnd||null);
+                        return monthSet.has(rKey) || monthSet.has(ch);
+                    }).length;
                     const el = document.getElementById('monthProgress_' + i);
                     if (el) {
                         el.textContent = rc > 0 ? `✓ ${rc}/${total}` : '';
@@ -2009,8 +2047,8 @@
             if (!currentChapter) return;
             if (monthlyMode) {
                 const s = getMonthReadSet();
-                if (s.has(currentChapter)) s.delete(currentChapter);
-                else s.add(currentChapter);
+                if (s.has(currentReadKey)) s.delete(currentReadKey);
+                else s.add(currentReadKey);
                 localStorage.setItem(monthKey, JSON.stringify([...s]));
             } else {
                 const s = getReadSet();
@@ -2023,6 +2061,23 @@
         }
 
         function navigate(dir) {
+            // אם אנחנו במצב חודשי עם חלק פרק, ננסה לעבור לרשומה הבאה/קודמת בלוח
+            if (monthlyMode && (currentVerseStart || currentVerseEnd)) {
+                const idx = monthlySchedule.findIndex(e =>
+                    e.range[0] === currentChapter &&
+                    e.range[1] === currentChapter &&
+                    (e.verseStart || null) === currentVerseStart &&
+                    (e.verseEnd || null) === currentVerseEnd
+                );
+                if (idx !== -1) {
+                    const nextIdx = idx + dir;
+                    if (nextIdx >= 0 && nextIdx < monthlySchedule.length) {
+                        const nextEntry = monthlySchedule[nextIdx];
+                        fetchPerek(nextEntry.range[0], true, nextEntry.verseStart || null, nextEntry.verseEnd || null);
+                        return;
+                    }
+                }
+            }
             const next = currentChapter + dir;
             if (next >= 1 && next <= 150) fetchPerek(next, monthlyMode);
         }
