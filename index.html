@@ -1851,7 +1851,7 @@
                 const btn = document.createElement('button');
                 const rKey = makeReadKey(ch, entry.verseStart||null, entry.verseEnd||null);
                 const read = getMonthReadSet().has(rKey);
-                btn.className = 'month-chapter-btn' + (ch === currentChapter ? ' reading' : '') + (read ? ' done' : '');
+                btn.className = 'month-chapter-btn' + (read ? ' done' : '');
                 btn.dataset.num = ch;
                 btn.dataset.readkey = rKey;
                 btn.textContent = toGematria(ch);
