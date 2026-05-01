@@ -1809,6 +1809,8 @@
         // =====================
         function selectDay(index) {
             selectedDay = index;
+            monthlyMode = false;
+            selectedMonthDay = null;
             const day = dailySchedule[index];
 
             document.querySelectorAll('.day-card').forEach((c, i) => {
@@ -1968,8 +1970,15 @@
                 perekBody.innerHTML = cleanText;
 
                 chapterCounter.textContent = `${num} / 150`;
-                document.getElementById('btnPrev').disabled = num <= 1;
-                document.getElementById('btnNext').disabled = num >= 150;
+                if (monthlyMode && selectedMonthDay !== null) {
+                    const entry = monthlySchedule[selectedMonthDay];
+                    document.getElementById('btnPrev').disabled = num <= entry.range[0];
+                    document.getElementById('btnNext').disabled = num >= entry.range[1];
+                } else {
+                    document.getElementById('btnPrev').disabled = num <= 1;
+                    document.getElementById('btnNext').disabled = num >= 150;
+                }
+
 
                 loader.style.display = 'none';
                 chapterContent.style.display = 'block';
@@ -2075,25 +2084,16 @@
         }
 
         function navigate(dir) {
-            // אם אנחנו במצב חודשי עם חלק פרק, ננסה לעבור לרשומה הבאה/קודמת בלוח
-            if (monthlyMode && (currentVerseStart || currentVerseEnd)) {
-                const idx = monthlySchedule.findIndex(e =>
-                    e.range[0] === currentChapter &&
-                    e.range[1] === currentChapter &&
-                    (e.verseStart || null) === currentVerseStart &&
-                    (e.verseEnd || null) === currentVerseEnd
-                );
-                if (idx !== -1) {
-                    const nextIdx = idx + dir;
-                    if (nextIdx >= 0 && nextIdx < monthlySchedule.length) {
-                        const nextEntry = monthlySchedule[nextIdx];
-                        fetchPerek(nextEntry.range[0], true, nextEntry.verseStart || null, nextEntry.verseEnd || null);
-                        return;
-                    }
+            if (monthlyMode && selectedMonthDay !== null) {
+                const entry = monthlySchedule[selectedMonthDay];
+                const next = currentChapter + dir;
+                if (next >= entry.range[0] && next <= entry.range[1]) {
+                    fetchPerek(next, true);
                 }
+                return;
             }
             const next = currentChapter + dir;
-            if (next >= 1 && next <= 150) fetchPerek(next, monthlyMode);
+            if (next >= 1 && next <= 150) fetchPerek(next, false);
         }
 
         function clearWeeklyReads() {
