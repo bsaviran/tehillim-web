@@ -1438,7 +1438,6 @@
             <div class="selector-wrapper">
                 <select id="perekSelect" onchange="fetchPerek(this.value)"></select>
             </div>
-            <div class="quick-grid" id="quickGrid"></div>
         </div>
 
         <div class="ornament-divider"><span>✦ ✦ ✦</span></div>
@@ -1907,17 +1906,6 @@
         // =====================
         // QUICK CHAPTERS
         // =====================
-        const famousChapters = [1, 2, 3, 4, 5];
-        const quickGrid = document.getElementById('quickGrid');
-        famousChapters.forEach(n => {
-            const btn = document.createElement('button');
-            btn.className = 'quick-btn';
-            btn.dataset.num = n;
-            btn.textContent = toGematria(n);
-            btn.title = `פרק ${toGematria(n)}`;
-            btn.onclick = () => fetchPerek(n);
-            quickGrid.appendChild(btn);
-        });
 
         // Populate dropdown
         for (let i = 1; i <= 150; i++) {
