@@ -1977,7 +1977,6 @@
                 const verseRangeText = (verseStart || verseEnd)
                     ? ` · פסוקים ${toGematria(baseVerse)}–${toGematria(verseEnd || verses.length + baseVerse - 1)}`
                     : '';
-                chapterSubtitle.textContent = `מזמור ${num} מתוך 150 · ספר תהילים${verseRangeText}`;
                 perekBody.innerHTML = cleanText;
 
                 chapterCounter.textContent = `${num} / 150`;
