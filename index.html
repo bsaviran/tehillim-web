@@ -1534,8 +1534,17 @@
                 const dayOfYear=jdn-yearStart(hYear)+1;
                 let days=0, hMonth=1;
                 const months=isLeap(hYear)?13:12;
-                for(let i=1;i<=months;i++){const md=monthDays(hYear,i);if(days+md>=dayOfYear){hMonth=i;break;}days+=md;}
-                return 'tehillim_month_read_'+hYear+'_'+hMonth;
+                // השנה מתחילה בתשרי (חודש 7): סדר החודשים 7..סוף, ואז 1..6
+                const order=[];for(let i=7;i<=months;i++)order.push(i);for(let i=1;i<=6;i++)order.push(i);
+                for(const i of order){const md=monthDays(hYear,i);if(days+md>=dayOfYear){hMonth=i;break;}days+=md;}
+                const key='tehillim_month_read_'+hYear+'_'+hMonth;
+                // העברת התקדמות מהמפתח הישן (שחושב בטעות) למפתח הנכון
+                try{
+                    let od=0,om=1;for(let i=1;i<=months;i++){const md=monthDays(hYear,i);if(od+md>=dayOfYear){om=i;break;}od+=md;}
+                    const oldKey='tehillim_month_read_'+hYear+'_'+om;
+                    if(oldKey!==key&&localStorage.getItem(oldKey)&&!localStorage.getItem(key)){localStorage.setItem(key,localStorage.getItem(oldKey));localStorage.removeItem(oldKey);}
+                }catch(e){}
+                return key;
             } catch(e) {
                 return 'tehillim_month_read_'+new Date().toISOString().slice(0,7);
             }
@@ -1703,7 +1712,11 @@
                 let mo = 1;
                 let days = 0;
                 const months = hebrewMonthsInYear(yr);
-                for (let i = 1; i <= months; i++) {
+                // השנה מתחילה בתשרי (חודש 7): סדר החודשים 7..סוף, ואז 1..6
+                const order = [];
+                for (let i = 7; i <= months; i++) order.push(i);
+                for (let i = 1; i <= 6; i++) order.push(i);
+                for (const i of order) {
                     const mdays = hebrewMonthDays(yr, i);
                     if (days + mdays >= dayOfYear) {
                         return dayOfYear - days;
