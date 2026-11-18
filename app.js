@@ -89,7 +89,7 @@ function markMonthAsRead(num) {
 }
 // קריאה כללית — לא מתאפסת אוטומטית
 const generalKey = 'tehillim_general_read';
-let generalMode = false;
+let generalMode = true;
 function getGeneralReadSet() {
     try { return new Set(JSON.parse(localStorage.getItem(generalKey) || '[]')); }
     catch { return new Set(); }
@@ -98,7 +98,7 @@ function isRead(num) { return getReadSet().has(num); }
 function isMonthRead(num) { return getMonthReadSet().has(num); }
 
 // Current tab
-let currentTab = 'daily';
+let currentTab = 'general';
 
 function switchTab(tab) {
     currentTab = tab;
@@ -109,6 +109,7 @@ function switchTab(tab) {
     document.getElementById('tabGeneral').classList.toggle('active', tab === 'general');
     document.getElementById('sectionGeneral').classList.toggle('active', tab === 'general');
     generalMode = tab === 'general';
+    document.getElementById('btnRandom').hidden = !generalMode;
     if (generalMode) monthlyMode = false;
     if (currentChapter) updateMarkReadBtn(currentChapter);
 }
