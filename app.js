@@ -725,6 +725,25 @@ function clearGeneralReads() {
     if (currentChapter) updateMarkReadBtn(currentChapter);
 }
 
+// =====================
+// מצב בהיר / כהה
+// =====================
+function applyTheme(theme) {
+    const light = theme === 'light';
+    if (light) document.documentElement.dataset.theme = 'light';
+    else delete document.documentElement.dataset.theme;
+    document.querySelector('meta[name="theme-color"]').content = light ? '#f9fafb' : '#0a1628';
+    const btn = document.getElementById('btnTheme');
+    btn.textContent = light ? '🌙' : '☀️';
+    btn.title = light ? 'מעבר למצב כהה' : 'מעבר למצב בהיר';
+}
+function toggleTheme() {
+    const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem('tehillim_theme', next); } catch (e) {}
+}
+applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
+
 function getRandomPerek() {
     fetchPerek(Math.floor(Math.random() * 150) + 1);
 }
