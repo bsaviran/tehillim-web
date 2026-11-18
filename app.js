@@ -497,6 +497,18 @@ let currentVerseEnd = null;
 
 let currentReadKey = null;
 
+// טקסט התהילים נשמר מקומית (tehillim.json) — נטען פעם אחת ונשמר בזיכרון
+let tehillimPromise = null;
+function loadTehillim() {
+    if (!tehillimPromise) {
+        tehillimPromise = fetch('tehillim.json?v=1')
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .catch(e => { tehillimPromise = null; throw e; });
+    }
+    return tehillimPromise;
+}
+loadTehillim().catch(() => {}); // טעינה מוקדמת ברקע עם פתיחת האתר
+
 async function fetchPerek(num, isMonthly, verseStart, verseEnd) {
     num = parseInt(num);
     if (!num) return;
@@ -526,10 +538,8 @@ async function fetchPerek(num, isMonthly, verseStart, verseEnd) {
     });
 
     try {
-        const response = await fetch(`https://www.sefaria.org/api/texts/Psalms.${num}?context=0&commentary=0`);
-        const data = await response.json();
-
-        let verses = data.he;
+        const allChapters = await loadTehillim();
+        let verses = allChapters[num - 1];
         if (verseStart) verses = verses.slice(verseStart - 1);
         if (verseEnd)   verses = verses.slice(0, verseEnd);
 
