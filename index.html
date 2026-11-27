@@ -27,7 +27,7 @@
         } catch (e) {}
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@300;400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
 
@@ -196,6 +196,10 @@
                 <div id="chapterContent" style="display:none;">
                     <h2 id="perekTitle"></h2>
                     <p class="chapter-subtitle" id="chapterSubtitle"></p>
+                    <div class="text-tools">
+                        <button class="tool-btn" id="btnTextSmaller" onclick="changeTextScale(-1)" aria-label="הקטן טקסט" title="הקטן טקסט">א-</button>
+                        <button class="tool-btn" id="btnTextBigger" onclick="changeTextScale(1)" aria-label="הגדל טקסט" title="הגדל טקסט">א+</button>
+                    </div>
                     <div id="perekBody"></div>
                     <div class="mark-read-wrap">
                         <button class="btn-mark-read" id="btnMarkRead" onclick="toggleRead()">
@@ -217,6 +221,6 @@
         <p class="footer-text">© כל הזכויות שמורות ל<span> bsaviran </span> · ספר תהילים</p>
     </footer>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>

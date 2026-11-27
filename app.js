@@ -745,6 +745,30 @@ function toggleTheme() {
 }
 applyTheme(document.documentElement.dataset.theme === 'light' ? 'light' : 'dark');
 
+// =====================
+// גודל טקסט
+// =====================
+const TEXT_SCALES = [0.85, 1, 1.15, 1.3, 1.5, 1.75];
+let textScaleIndex = 1;
+try {
+    const stored = parseInt(localStorage.getItem('tehillim_text_scale'), 10);
+    if (TEXT_SCALES[stored]) textScaleIndex = stored;
+} catch (e) {}
+
+function applyTextScale() {
+    document.documentElement.style.setProperty('--text-scale', TEXT_SCALES[textScaleIndex]);
+    document.getElementById('btnTextSmaller').disabled = textScaleIndex === 0;
+    document.getElementById('btnTextBigger').disabled = textScaleIndex === TEXT_SCALES.length - 1;
+}
+function changeTextScale(dir) {
+    const next = textScaleIndex + dir;
+    if (!TEXT_SCALES[next]) return;
+    textScaleIndex = next;
+    try { localStorage.setItem('tehillim_text_scale', String(textScaleIndex)); } catch (e) {}
+    applyTextScale();
+}
+applyTextScale();
+
 function getRandomPerek() {
     fetchPerek(Math.floor(Math.random() * 150) + 1);
 }

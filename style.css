@@ -987,15 +987,32 @@ main {
     margin-bottom: 3rem;
 }
 
+/* כפתורי גודל טקסט */
+.text-tools { display: flex; justify-content: center; gap: 10px; margin: -2rem 0 2rem; }
+.tool-btn {
+    min-width: 44px;
+    height: 44px;
+    background: none;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 12px;
+    color: var(--gold);
+    font-family: 'Noto Serif Hebrew', serif;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.tool-btn:hover:not(:disabled) { background: var(--gold-dim); }
+.tool-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
 #perekBody {
     font-family: 'Noto Serif Hebrew', serif;
-    font-size: 1.5rem;
+    font-size: calc(1.5rem * var(--text-scale, 1));
     line-height: 2.6;
     color: var(--text);
     text-align: right;
     transition: opacity 0.4s;
 }
-@media (min-width: 600px) { #perekBody { font-size: 1.75rem; } }
+@media (min-width: 600px) { #perekBody { font-size: calc(1.75rem * var(--text-scale, 1)); } }
 
 .verse-sep {
     color: rgba(201,168,76,0.35);
@@ -1388,7 +1405,7 @@ footer {
     .card-inner { padding: 1.8rem 1.2rem; }
     #perekTitle { font-size: 2rem !important; }
     .chapter-subtitle { font-size: 0.7rem; margin-bottom: 1.8rem; }
-    #perekBody { font-size: 1.25rem; line-height: 2.3; }
+    #perekBody { font-size: calc(1.25rem * var(--text-scale, 1)); line-height: 2.3; }
 
     /* Nav */
     .chapter-nav { margin-top: 2rem; padding-top: 1.5rem; }
@@ -1409,6 +1426,6 @@ footer {
     .rabbis-row { gap: 2rem; }
     .rabbi-frame { width: 160px; height: 160px; }
     .monthly-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
-    #perekBody { font-size: 1.35rem; }
+    #perekBody { font-size: calc(1.35rem * var(--text-scale, 1)); }
     .card-inner { padding: 2rem 1.5rem; }
 }
