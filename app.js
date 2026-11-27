@@ -548,7 +548,7 @@ async function fetchPerek(num, isMonthly, verseStart, verseEnd) {
         const cleanText = verses.map((v, i) => {
             const verseNum = toGematria(baseVerse + i);
             return `<span style="color:var(--gold);font-size:0.85em;margin-left:8px;opacity:0.7;">${verseNum}</span>${v}`;
-        }).join(' <span class="verse-sep">׃</span> ');
+        }).join(' '); // כל פסוק כבר מסתיים בסוף פסוק (׃) בטקסט עצמו
 
         perekTitle.textContent = `פרק ${toGematria(num)}`;
         const verseRangeText = (verseStart || verseEnd)
