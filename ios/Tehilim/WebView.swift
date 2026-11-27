@@ -104,11 +104,23 @@ struct WebView: UIViewRepresentable {
         #endif
 
         // Load only once the blocking rules are in place, so the first load doesn't reach Google.
-        WKContentRuleListStore.default().compileContentRuleList(forIdentifier: "block-remote-fonts", encodedContentRuleList: Self.blockRemoteFontsRules) { rules, _ in
+        // The compiled rules are kept on disk, so only the first launch has to compile them.
+        let store = WKContentRuleListStore.default()!
+        let ruleID = "block-remote-fonts-v1"
+        let start = { (rules: WKContentRuleList?) in
             if let rules {
                 contentController.add(rules)
             }
             webView.load(URLRequest(url: Self.startURL))
+        }
+        store.lookUpContentRuleList(forIdentifier: ruleID) { cached, _ in
+            if let cached {
+                start(cached)
+            } else {
+                store.compileContentRuleList(forIdentifier: ruleID, encodedContentRuleList: Self.blockRemoteFontsRules) { rules, _ in
+                    start(rules)
+                }
+            }
         }
         return webView
     }

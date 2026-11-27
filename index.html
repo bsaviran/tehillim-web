@@ -27,6 +27,8 @@
         } catch (e) {}
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@300;400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="images/rebbe.jpg?v=2">
+    <link rel="preload" as="image" href="images/rav-abergel.jpg?v=2">
     <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
@@ -55,14 +57,14 @@
 
 
         <!-- Rabbis Tribute -->
-        <div class="rabbis-row animate-in">
+        <div class="rabbis-row">
 
             <!-- Lubavitcher Rebbe -->
             <div class="rabbi-tribute">
                 <div class="rabbi-frame-outer">
                     <div class="rabbi-glow"></div>
                     <div class="rabbi-frame">
-                        <img src="images/rebbe.jpg?v=2" alt="הרבי מלובביץ זצוק&quot;ל" />
+                        <img src="images/rebbe.jpg?v=2" fetchpriority="high" decoding="sync" alt="הרבי מלובביץ זצוק&quot;ל" />
                     </div>
                 </div>
                 <div class="rabbi-ornament">
@@ -81,7 +83,7 @@
                 <div class="rabbi-frame-outer">
                     <div class="rabbi-glow"></div>
                     <div class="rabbi-frame">
-                        <img src="images/rav-abergel.jpg?v=2" alt="הרב יורם מיכאל אברג'ל זצוק&quot;ל" />
+                        <img src="images/rav-abergel.jpg?v=2" fetchpriority="high" decoding="sync" alt="הרב יורם מיכאל אברג'ל זצוק&quot;ל" />
                     </div>
                 </div>
                 <div class="rabbi-ornament">
