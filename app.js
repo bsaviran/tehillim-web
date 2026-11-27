@@ -779,9 +779,24 @@ function shareToWhatsapp() {
     const currentText = currentChapter > 0
         ? `פרק ${toGematria(currentChapter)}`
         : 'ספר תהילים';
-    const text = `מזמין אותך לקרוא תהילים איתי: ${currentText}\n${window.location.href}`;
+    const link = chapterShareUrl(window.location.origin + window.location.pathname);
+    const text = `מזמין אותך לקרוא תהילים איתי: ${currentText}\n${link}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
+
+// קישור שיתוף שפותח ישר את הפרק הנוכחי, למשל ...?perek=23
+function chapterShareUrl(base) {
+    return currentChapter > 0 ? `${base}?perek=${currentChapter}` : base;
+}
+
+// פתיחה מקישור משותף: אם בכתובת יש ?perek=N – פותחים את הפרק וגוללים אליו
+(function openSharedChapter() {
+    const num = parseInt(new URLSearchParams(window.location.search).get('perek'), 10);
+    if (!(num >= 1 && num <= 150)) return;
+    fetchPerek(num, false).then(() => {
+        document.getElementById('chapterCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+})();
 
 window.addEventListener('load', () => {
     setTimeout(() => {

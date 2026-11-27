@@ -39,8 +39,14 @@ struct WebView: UIViewRepresentable {
       }
       window.shareToWhatsapp = function () {
         var what = 'ספר תהילים';
-        try { if (currentChapter > 0) what = 'פרק ' + toGematria(currentChapter); } catch (e) {}
-        post({ action: 'share', text: 'מזמין אותך לקרוא תהילים איתי: ' + what + '\\n\(siteURL)' });
+        var link = '\(siteURL)';
+        try {
+          if (currentChapter > 0) {
+            what = 'פרק ' + toGematria(currentChapter);
+            link += '?perek=' + currentChapter;
+          }
+        } catch (e) {}
+        post({ action: 'share', text: 'מזמין אותך לקרוא תהילים איתי: ' + what + '\\n' + link });
       };
 
       var originalApplyTheme = window.applyTheme;
