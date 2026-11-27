@@ -1432,3 +1432,7 @@ footer {
     #perekBody { font-size: calc(1.35rem * var(--text-scale, 1)); }
     .card-inner { padding: 2rem 1.5rem; }
 }
+
+/* ירידת שורה לפני שם המשפחה של הרבנים – רק בטלפון */
+.br-mobile { display: none; }
+@media (max-width: 600px) { .br-mobile { display: inline; } }
