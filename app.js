@@ -557,14 +557,9 @@ async function fetchPerek(num, isMonthly, verseStart, verseEnd) {
         perekBody.innerHTML = cleanText;
 
         chapterCounter.textContent = `${num} / 150`;
-        if (monthlyMode && selectedMonthDay !== null) {
-            const entry = monthlySchedule[selectedMonthDay];
-            document.getElementById('btnPrev').disabled = num <= entry.range[0];
-            document.getElementById('btnNext').disabled = num >= entry.range[1];
-        } else {
-            document.getElementById('btnPrev').disabled = num <= 1;
-            document.getElementById('btnNext').disabled = num >= 150;
-        }
+        const [navMin, navMax] = getNavRange(num);
+        document.getElementById('btnPrev').disabled = num <= navMin;
+        document.getElementById('btnNext').disabled = num >= navMax;
 
 
         loader.style.display = 'none';
@@ -681,17 +676,24 @@ function toggleRead() {
     updateReadUI(currentChapter);
 }
 
-function navigate(dir) {
+// טווח הפרקים שבו אפשר לדפדף הקודם/הבא:
+// בקריאה חודשית ושבועית – רק הפרקים של היום שנבחר; אחרת – כל הספר
+function getNavRange(num) {
     if (monthlyMode && selectedMonthDay !== null) {
-        const entry = monthlySchedule[selectedMonthDay];
-        const next = currentChapter + dir;
-        if (next >= entry.range[0] && next <= entry.range[1]) {
-            fetchPerek(next, true);
-        }
-        return;
+        return monthlySchedule[selectedMonthDay].range;
     }
+    if (!generalMode && currentTab === 'daily' && selectedDay !== null) {
+        const range = dailySchedule[selectedDay].range;
+        if (num >= range[0] && num <= range[1]) return range;
+    }
+    return [1, 150];
+}
+
+function navigate(dir) {
     const next = currentChapter + dir;
-    if (next >= 1 && next <= 150) fetchPerek(next, false);
+    const [navMin, navMax] = getNavRange(currentChapter);
+    if (next < navMin || next > navMax) return;
+    fetchPerek(next, monthlyMode && selectedMonthDay !== null);
 }
 
 function clearWeeklyReads() {
