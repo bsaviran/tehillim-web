@@ -771,6 +771,15 @@ function changeTextScale(dir) {
 }
 applyTextScale();
 
+// לחיצה על הלוגו: טעינה מחדש של העמוד הראשי, בלי פרק פתוח (גם בלי ?perek=)
+function goHome() {
+    window.scrollTo(0, 0); // כדי שהדפדפן לא ישחזר את מיקום הגלילה הקודם
+    window.location.href = window.location.pathname;
+}
+document.querySelector('.logo').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goHome(); }
+});
+
 function getRandomPerek() {
     fetchPerek(Math.floor(Math.random() * 150) + 1);
 }
